@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.projeto.trabalho_2_service_layer.controller.BemVindoController"
+            style="-fx-background-color: #2c3e50;">
+    <center>
+        <VBox alignment="CENTER" spacing="15.0">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+            </padding>
+            <children>
+                <Label text="Bem vindo ao Rafa's Restaurant"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+                <Button text="Já tem login?" onAction="#irParaLogin"
+                        prefWidth="200.0" style="-fx-font-size: 14px;"/>
+
+                <Button text="Não é registrado?" onAction="#irParaCadastro"
+                        prefWidth="200.0" style="-fx-font-size: 14px;"/>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

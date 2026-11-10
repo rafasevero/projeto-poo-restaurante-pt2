@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.projeto.trabalho_2_service_layer.controller.ComandaController"
+            prefWidth="650.0" prefHeight="700.0"
+            style="-fx-background-color: #f4f6f7;">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #2c3e50; -fx-padding: 12px;">
+            <children>
+                <Button text="← Voltar" onAction="#voltarOnAction" style="-fx-font-weight: bold;"/>
+                <Label text="Gerenciamento de Comandas e Itens" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f4f6f7;">
+            <content>
+                <VBox spacing="10.0" alignment="TOP_LEFT" maxWidth="560.0">
+                    <padding>
+                        <Insets top="15.0" right="20.0" bottom="20.0" left="20.0"/>
+                    </padding>
+                    <children>
+                        <Label text="Comandas Ativas (Clique para selecionar):" style="-fx-font-weight: bold;"/>
+                        <ListView fx:id="listComandas" prefHeight="130.0"/>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Número da Mesa:" style="-fx-font-weight: bold;"/>
+                                        <TextField fx:id="txtMesa" promptText="Ex: 13"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Status:" style="-fx-font-weight: bold;"/>
+                                        <TextField fx:id="txtStatus" promptText="ABERTA"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0" alignment="CENTER_LEFT">
+                            <children>
+                                <Button text="Abrir Comanda" onAction="#criarOnAction"
+                                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;" prefWidth="110.0" prefHeight="32.0"/>
+                                <Button text="Atualizar Mesa" onAction="#atualizarOnAction"
+                                        style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold;" prefWidth="110.0" prefHeight="32.0"/>
+                                <Button text="Excluir Comanda" onAction="#deletarOnAction"
+                                        style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold;" prefWidth="120.0" prefHeight="32.0"/>
+                                <Button text="Limpar" onAction="#limparOnAction" prefWidth="80.0" prefHeight="32.0"/>
+                            </children>
+                        </HBox>
+
+                        <VBox spacing="8.0" style="-fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-padding: 10; -fx-background-color: #ffffff;">
+                            <children>
+                                <Label text="Adicionar Produto na Comanda Selecionada:" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                    <children>
+                                        <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label text="Produto do Cardápio:"/>
+                                                <ComboBox fx:id="cbProdutos" prefWidth="250.0" promptText="Selecione o produto"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="3.0" prefWidth="90.0">
+                                            <children>
+                                                <Label text="Qtd:"/>
+                                                <TextField fx:id="txtQuantidade" promptText="1"/>
+                                            </children>
+                                        </VBox>
+                                        <Button text="Adicionar Item" onAction="#adicionarItemOnAction"
+                                                style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;" prefHeight="26.0"/>
+                                    </children>
+                                </HBox>
+
+                                <Label text="Itens consumidos nesta comanda:" style="-fx-font-weight: bold; -fx-padding: 5 0 0 0;"/>
+                                <ListView fx:id="listItensComanda" prefHeight="100.0"/>
+
+                                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                    <children>
+                                        <Label text="Valor Total da Comanda:" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                        <TextField fx:id="txtValorTotal" editable="false" prefWidth="110.0"
+                                                   style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-background-color: #eaeded;" promptText="R$ 0.00"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <Label fx:id="lblMensagem" text="" wrapText="true"/>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>
