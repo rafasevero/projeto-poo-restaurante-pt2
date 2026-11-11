@@ -30,14 +30,15 @@ public class ItemComandaDAO implements IItemComandaDAO {
             stmt.setInt(1, comandaId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    ItemComanda item = new ItemComanda();
-                    item.setItemComandaId(rs.getInt("item_comanda_id"));
-                    item.setComandaId(rs.getInt("comanda_id"));
-                    item.setProdutoId(rs.getInt("produto_id"));
-                    item.setQuantidade(rs.getInt("quantidade"));
-                    item.setPrecoUnitario(rs.getDouble("preco_unitario"));
-                    item.setNomeProduto(rs.getString("nome_produto"));
-                    lista.add(item);
+                    // PADRÃO BUILDER: substitui "new ItemComanda()" + 6 setters
+                    lista.add(ItemComanda.builder()
+                            .itemComandaId(rs.getInt("item_comanda_id"))
+                            .comandaId(rs.getInt("comanda_id"))
+                            .produtoId(rs.getInt("produto_id"))
+                            .quantidade(rs.getInt("quantidade"))
+                            .precoUnitario(rs.getDouble("preco_unitario"))
+                            .nomeProduto(rs.getString("nome_produto"))
+                            .build());
                 }
             }
         }

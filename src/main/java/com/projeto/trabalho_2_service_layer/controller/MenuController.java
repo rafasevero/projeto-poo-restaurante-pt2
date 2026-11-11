@@ -2,6 +2,8 @@ package com.projeto.trabalho_2_service_layer.controller;
 
 import com.projeto.trabalho_2_service_layer.main.GerenciadorTelas;
 import com.projeto.trabalho_2_service_layer.model.SessaoUsuario;
+import com.projeto.trabalho_2_service_layer.strategy.PoliticaAcesso;
+import com.projeto.trabalho_2_service_layer.strategy.PoliticasDeAcesso;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import java.io.IOException;
@@ -15,24 +17,20 @@ public class MenuController {
 
     @FXML
     public void initialize() {
-        String perfil = SessaoUsuario.getPerfilLogado();
+        // PADRÃO STRATEGY - papel: Context.
+        // O controller não conhece mais os perfis: pergunta à estratégia do usuário logado.
+        PoliticaAcesso politica = PoliticasDeAcesso.obter(SessaoUsuario.getPerfilLogado());
 
-        if (perfil == null) return;
-        switch (perfil) {
-            case "Garçom":
-                if (btnUsuarios != null) btnUsuarios.setVisible(false);
-                if (btnProdutos != null) btnProdutos.setVisible(false);
-                break;
+        if (politica == null) return;
 
-            case "Cozinheiro":
-                if (btnUsuarios != null) btnUsuarios.setVisible(false);
-                if (btnProdutos != null) btnProdutos.setVisible(false);
-                if (btnCardapio != null) btnCardapio.setVisible(false);
-                break;
+        definirVisibilidade(btnUsuarios, politica.podeAcessarUsuarios());
+        definirVisibilidade(btnProdutos, politica.podeAcessarProdutos());
+        definirVisibilidade(btnCardapio, politica.podeAcessarCardapio());
+        definirVisibilidade(btnComandas, politica.podeAcessarComandas());
+    }
 
-            case "Gerente":
-                break;
-        }
+    private void definirVisibilidade(Button botao, boolean visivel) {
+        if (botao != null) botao.setVisible(visivel);
     }
 
     @FXML

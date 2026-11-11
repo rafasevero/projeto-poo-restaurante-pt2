@@ -3,19 +3,19 @@ package com.projeto.trabalho_2_service_layer.service;
 import com.projeto.trabalho_2_service_layer.dao.IUsuarioDAO;
 import com.projeto.trabalho_2_service_layer.dao.UsuarioDAO;
 import com.projeto.trabalho_2_service_layer.model.Usuario;
+import com.projeto.trabalho_2_service_layer.strategy.PoliticasDeAcesso;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class UsuarioService {
 
-    private static final List<String> PERFIS_VALIDOS = List.of("Gerente", "Garçom", "Cozinheiro");
-
     private final IUsuarioDAO usuarioDAO;
 
     public UsuarioService() {
         this.usuarioDAO = new UsuarioDAO();
     }
+
     public Usuario autenticar(String email, String senha) throws ServiceException {
         if (email == null || email.isBlank() || senha == null || senha.isBlank()) {
             throw new ServiceException("Preencha o e-mail e a senha!");
@@ -63,7 +63,9 @@ public class UsuarioService {
         if (usuario.getPerfil() == null || usuario.getPerfil().isBlank()) {
             throw new ServiceException("Por favor, selecione um cargo!");
         }
-        if (!PERFIS_VALIDOS.contains(usuario.getPerfil())) {
+        // PADRÃO STRATEGY: a lista de perfis válidos vem do registro de estratégias
+        // (antes era a constante PERFIS_VALIDOS duplicada neste Service).
+        if (!PoliticasDeAcesso.contem(usuario.getPerfil())) {
             throw new ServiceException("Cargo inválido!");
         }
     }

@@ -31,11 +31,7 @@ public class UsuarioController {
 
     @FXML
     public void initialize() {
-        cbPerfil.setItems(FXCollections.observableArrayList(
-                "Gerente",
-                "Garçom",
-                "Cozinheiro"
-        ));
+        cbPerfil.setItems(FXCollections.observableArrayList(PoliticasDeAcesso.perfisValidos()));
 
         carregarUsuarios();
 

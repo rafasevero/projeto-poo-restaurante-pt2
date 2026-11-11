@@ -1,10 +1,10 @@
 package com.projeto.trabalho_2_service_layer.controller;
 
+import com.projeto.trabalho_2_service_layer.facade.CardapioFacade;
+import com.projeto.trabalho_2_service_layer.facade.ItemCardapioDetalhado;
 import com.projeto.trabalho_2_service_layer.main.GerenciadorTelas;
 import com.projeto.trabalho_2_service_layer.model.Cardapio;
 import com.projeto.trabalho_2_service_layer.model.Produto;
-import com.projeto.trabalho_2_service_layer.service.CardapioService;
-import com.projeto.trabalho_2_service_layer.service.ProdutoService;
 import com.projeto.trabalho_2_service_layer.service.ServiceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,10 +25,11 @@ public class CardapioController {
     @FXML private ListView<String> listCardapio;
     @FXML private Label lblMensagem;
 
-    private final CardapioService cardapioService = new CardapioService();
-    private final ProdutoService produtoService = new ProdutoService();
+    // PADRÃO FACADE - papel: Client. O Controller conhece apenas a fachada
+    // (antes instanciava CardapioService e ProdutoService e coordenava os dois).
+    private final CardapioFacade cardapioFacade = new CardapioFacade();
 
-    private List<Cardapio> listaCardapioBanco;
+    private List<ItemCardapioDetalhado> listaCardapioBanco;
     private List<Produto> listaProdutosBanco;
     private Cardapio itemSelecionado;
 
@@ -40,7 +41,7 @@ public class CardapioController {
         listCardapio.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
             int index = newVal.intValue();
             if (listaCardapioBanco != null && index >= 0 && index < listaCardapioBanco.size()) {
-                itemSelecionado = listaCardapioBanco.get(index);
+                itemSelecionado = listaCardapioBanco.get(index).getCardapio();
                 txtNomeSecao.setText(itemSelecionado.getNomeSecao());
                 txtDescricao.setText(itemSelecionado.getDescricao() != null ? itemSelecionado.getDescricao() : "");
                 selecionarProdutoNoCombo(itemSelecionado.getProdutoId());
@@ -51,7 +52,7 @@ public class CardapioController {
 
     private void carregarProdutosCombo() {
         try {
-            listaProdutosBanco = produtoService.listarTodos();
+            listaProdutosBanco = cardapioFacade.listarProdutos();
             ObservableList<String> itens = FXCollections.observableArrayList();
             for (Produto p : listaProdutosBanco) {
                 itens.add(p.getProdutoId() + " - " + p.getNome());
@@ -64,22 +65,14 @@ public class CardapioController {
 
     private void carregarListaCardapio() {
         try {
-            listaCardapioBanco = cardapioService.listarTodos();
+            // A junção item do cardápio + nome do produto agora vem pronta da fachada
+            listaCardapioBanco = cardapioFacade.listarCardapioDetalhado();
             ObservableList<String> exibicao = FXCollections.observableArrayList();
 
-            for (Cardapio c : listaCardapioBanco) {
-                String nomeProduto = "Produto não encontrado";
-                if (listaProdutosBanco != null) {
-                    for (Produto p : listaProdutosBanco) {
-                        if (p.getProdutoId() == c.getProdutoId()) {
-                            nomeProduto = p.getNome();
-                            break;
-                        }
-                    }
-                }
-
+            for (ItemCardapioDetalhado detalhe : listaCardapioBanco) {
+                Cardapio c = detalhe.getCardapio();
                 String descText = (c.getDescricao() != null && !c.getDescricao().isEmpty()) ? " - " + c.getDescricao() : "";
-                exibicao.add("[" + c.getNomeSecao() + "] " + nomeProduto + descText);
+                exibicao.add("[" + c.getNomeSecao() + "] " + detalhe.getNomeProduto() + descText);
             }
 
             listCardapio.setItems(exibicao);
@@ -112,7 +105,7 @@ public class CardapioController {
         try {
             int produtoId = listaProdutosBanco.get(selectedIndex).getProdutoId();
             Cardapio novo = new Cardapio(secao, desc, produtoId);
-            cardapioService.cadastrar(novo); // regras no Service
+            cardapioFacade.cadastrar(novo); // fachada -> Service (regras no Service)
 
             exibirSucesso("Item adicionado ao cardápio com sucesso!");
             limparCampos();
@@ -140,7 +133,7 @@ public class CardapioController {
             itemSelecionado.setDescricao(txtDescricao.getText().trim());
             itemSelecionado.setProdutoId(listaProdutosBanco.get(selectedIndex).getProdutoId());
 
-            cardapioService.atualizar(itemSelecionado);
+            cardapioFacade.atualizar(itemSelecionado);
             exibirSucesso("Item do cardápio atualizado!");
             limparCampos();
             carregarListaCardapio();
@@ -157,7 +150,7 @@ public class CardapioController {
         }
 
         try {
-            cardapioService.excluir(itemSelecionado);
+            cardapioFacade.excluir(itemSelecionado);
             exibirSucesso("Item removido do cardápio!");
             limparCampos();
             carregarListaCardapio();

@@ -69,11 +69,20 @@ public class ComandaService {
             throw new ServiceException("A quantidade deve ser maior que zero.");
         }
 
-        ItemComanda item = new ItemComanda(
-                comanda.getComandaId(),
-                produto.getProdutoId(),
-                quantidade,
-                produto.getPreco());
+        // PADRÃO BUILDER: substitui o construtor de 4 parâmetros (int, int, int, double).
+        // O build() valida os campos obrigatórios; a falha vira ServiceException.
+        ItemComanda item;
+        try {
+            item = ItemComanda.builder()
+                    .comandaId(comanda.getComandaId())
+                    .produtoId(produto.getProdutoId())
+                    .quantidade(quantidade)
+                    .precoUnitario(produto.getPreco())
+                    .build();
+        } catch (IllegalStateException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+
         try {
             itemComandaDAO.insere(item);
         } catch (SQLException e) {
